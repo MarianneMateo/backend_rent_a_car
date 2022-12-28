@@ -1,0 +1,31 @@
+//create user
+POST http://localhost:5000/users
+Content-Type: application/json
+{
+  "name": "Juan",
+  "email": "juan@gmail.com",
+  "password": "123456",
+  "confPassword": "123456",
+  "role": "user"
+}
+
+###
+// Get all users 
+GET http://localhost:5000/users
+
+###
+// Get Single User
+GET http://localhost:5000/users/9b30a0ed-8091-48a6-8b19-7bd9e056cfbe
+
+
+###
+//Updated user
+PATCH http://localhost:5000/users/f52fe798-d0bd-49e8-810c-52539a9593dc
+Content-Type: application/json
+{
+  "name": "Juan Updated",
+  "email": "juan@gmail.com",
+  "password": "123456",
+  "confPassword": "123456",
+  "role": "user"
+}
