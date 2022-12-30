@@ -34,13 +34,23 @@ export const createUser = async (req, res) => {
       .json({ msg: "Password and Confirm Password do not match" });
   const hashPassword = await argon2.hash(password);
   try {
-    await User.create({
-      name: name,
-      email: email,
-      password: hashPassword,
-      role: role,
+    await User.findOrCreate({
+      where: {
+        email: email,
+      },
+      defaults: {
+        name: name,
+        email: email,
+        password: hashPassword,
+        role: role,
+      },
+    }).then(([user, created]) => {
+      if (created) {
+        res.status(201).json({ msg: "User Created" });
+      } else {
+        res.status(201).json({ msg: "Email Already Exists" });
+      }
     });
-    res.status(201).json({ msg: "Successful Registration" });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
