@@ -27,7 +27,7 @@ const Vehicles = db.define('vehicles',{
         }
     },
     type:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         validate:{
             notEmpty: true,
@@ -40,15 +40,15 @@ const Vehicles = db.define('vehicles',{
             notEmpty: true,
         }
     },
-    longitude:{
-        type: DataTypes.DECIMAL,
+    latitude:{
+        type: DataTypes.DECIMAL(10,8),
         allowNull: false,
         validate:{
             notEmpty: true,
         }
     },
-    latitude:{
-        type: DataTypes.DECIMAL,
+    longitude:{
+        type: DataTypes.DECIMAL(11,8),
         allowNull: false,
         validate:{
             notEmpty: true,

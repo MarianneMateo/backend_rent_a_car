@@ -74,7 +74,8 @@ export const getBookingById = async (req, res) => {
       response = await Booking.findOne({
         attributes: ["uuid", "startDate", "endDate"],
         where: {
-          [Op.and]: [{ id: booking.id }, { userId: req.userId }],
+          id: booking.id,
+          userId: req.userId,
         },
         include: [
           {
@@ -91,21 +92,59 @@ export const getBookingById = async (req, res) => {
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ msg: error.message });
+    console.log(error);
   }
 };
 
 export const createBooking = async (req, res) => {
-  const { startDate, endDate } = req.body;
   try {
-    await Booking.create({
-      startDate: startDate,
-      endDate: endDate,
-      userId: req.userId,
-      vehicleId: req.vehicleId,
+    const vehicle = await Vehicle.findOne({
+      where: {
+        id: req.body.vehicleId,
+      },
     });
-    res.status(201).json({ msg: "Booking Created Successfully" });
+    if (vehicle) {
+      await Booking.findOrCreate({
+        where: {
+          vehicleId: req.body.vehicleId,
+          [Op.or]: [
+            {
+              startDate: {
+                [Op.between]: [req.body.startDate, req.body.endDate],
+              },
+            },
+            {
+              endDate: {
+                [Op.between]: [req.body.startDate, req.body.endDate],
+              },
+            },
+          ],
+        },
+        defaults: {
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+          vehicleId: req.body.vehicleId,
+          userId: req.userId,
+        },
+      }).then(([booking, create]) => {
+        if (create) {
+          res.status(201).json({ msg: "Booking Created Successfully" });
+        } else {
+          res.status(404).json({ msg: "Vehicle not available on those dates" });
+        }
+      });
+      /*  await Booking.create({
+        startDate,
+        endDate,
+        vehicleId,
+        userId: req.userId,
+      }); */
+    } else {
+      res.status(404).json({ msg: "Vehicle not found" });
+    }
   } catch (error) {
     res.status(500).json({ msg: error.message });
+    console.log(error);
   }
 };
 
@@ -117,10 +156,10 @@ export const updateBooking = async (req, res) => {
       },
     });
     if (!booking) return res.status(404).json({ msg: "Data not found" });
-    const { startDate, endDate } = req.body;
+    const { startDate, endDate, vehicleId } = req.body;
     if (req.role === "admin") {
       await Booking.update(
-        { startDate, endDate },
+        { startDate, endDate, vehicleId },
         {
           where: {
             id: booking.id,
@@ -131,7 +170,7 @@ export const updateBooking = async (req, res) => {
       if (req.userId !== booking.userId)
         return res.status(403).json({ msg: "Access prohibited" });
       await Booking.update(
-        { startDate, endDate },
+        { startDate, endDate, vehicleId },
         {
           where: {
             [Op.and]: [{ id: booking.id }, { userId: req.userId }],

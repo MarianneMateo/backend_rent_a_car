@@ -13,7 +13,7 @@ export const getVehicleById = async (req, res) => {
   try {
     const response = await Vehicle.findOne({
       where: {
-        id: req.params.id,
+        uuid: req.params.id,
       },
     });
     res.status(200).json(response);
@@ -40,7 +40,7 @@ export const updateVehicle = async (req, res) => {
     try {
       await Vehicle.update(req.body, {
         where: {
-          id: req.params.id,
+          uuid: req.params.id,
         },
       });
       res.status(200).json({ msg: "Vehicle Updated" });
@@ -57,7 +57,7 @@ export const deleteVehicle = async (req, res) => {
     try {
       await Vehicle.destroy({
         where: {
-          id: req.params.id,
+          uuid: req.params.id,
         },
       });
       res.status(200).json({ msg: "Vehicle Deleted" });
