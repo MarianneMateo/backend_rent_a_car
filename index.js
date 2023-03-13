@@ -8,6 +8,7 @@ import UserRoute from "./routes/UserRoute.js";
 import VehicleRoute from "./routes/VehicleRoute.js";
 import BookingRoute from "./routes/BookingRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import PaymentRoute from "./routes/PaymentRoute.js";
 dotenv.config();
 
 const app = express();
@@ -18,8 +19,8 @@ const store = new sessionStore({
   db: db,
 });
 
-/* (async()=>{
-    await db.sync();
+/* (async () => {
+  await db.sync();
 })(); */
 
 app.use(
@@ -37,7 +38,7 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
   })
 );
 app.use(express.json());
@@ -45,6 +46,7 @@ app.use(UserRoute);
 app.use(VehicleRoute);
 app.use(BookingRoute);
 app.use(AuthRoute);
+app.use(PaymentRoute);
 
 /* store.sync(); */
 

@@ -4,7 +4,7 @@ import argon2 from "argon2";
 export const getUsers = async (req, res) => {
   try {
     const response = await User.findAll({
-      attributes: ["uuid", "name", "email", "role"],
+      attributes: ["uuid", "name", "email", "photo", "role"],
     });
     res.status(200).json(response);
   } catch (error) {
@@ -15,7 +15,7 @@ export const getUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const response = await User.findOne({
-      attributes: ["uuid", "name", "email", "role"],
+      attributes: ["uuid", "name", "email", "photo", "role"],
       where: {
         uuid: req.params.id,
       },
@@ -27,7 +27,7 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const { name, email, password, confPassword, role } = req.body;
+  const { name, email, photo, password, confPassword, role } = req.body;
   if (password !== confPassword)
     return res
       .status(400)
@@ -41,6 +41,7 @@ export const createUser = async (req, res) => {
       defaults: {
         name: name,
         email: email,
+        photo: photo,
         password: hashPassword,
         role: role,
       },
@@ -63,7 +64,7 @@ export const updateUser = async (req, res) => {
     },
   });
   if (!user) return res.status(404).json({ msg: "User not found" });
-  const { name, email, password, confPassword, role } = req.body;
+  const { name, email, photo, password, confPassword, role } = req.body;
   let hashPassword;
   if (password === "" || password === null) {
     hashPassword = user.password;
@@ -79,6 +80,7 @@ export const updateUser = async (req, res) => {
       {
         name: name,
         email: email,
+        photo: photo,
         password: hashPassword,
         role: role,
       },

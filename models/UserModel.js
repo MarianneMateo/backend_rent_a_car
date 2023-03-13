@@ -28,6 +28,13 @@ const Users = db.define('users',{
             isEmail: true
         }
     },
+    photo:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate:{
+            notEmpty: true,
+        }
+    },
     password:{
         type: DataTypes.STRING,
         allowNull: false,

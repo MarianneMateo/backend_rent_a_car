@@ -30,6 +30,10 @@ const Bookings = db.define(
         notEmpty: true,
       },
     },
+    totalPay: {
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: false,
+    },
     vehicleId: {
       type: DataTypes.INTEGER,
       allowNull: false,
